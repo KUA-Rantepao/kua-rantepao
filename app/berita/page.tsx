@@ -1,5 +1,5 @@
 // app/berita/page.tsx
-import { getAllBerita } from '../../../lib/berita'
+import { getAllBerita } from '../../../lib/berita.ts'
 import Link from 'next/link'
 import Image from 'next/image'
 
