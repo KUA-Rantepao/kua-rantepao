@@ -3,7 +3,7 @@
 
 import Image from 'next/image';
 import Link from 'next/link';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 
 // Komponen Jadwal Shalat (Tanpa Hijriyah)
 function WidgetJadwalShalat() {
