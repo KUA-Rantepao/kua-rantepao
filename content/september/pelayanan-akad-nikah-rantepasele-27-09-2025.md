@@ -1,8 +1,5 @@
----
-title: Penghulu KUA Rantepao Laksanakan Akad Nikah di Kelurahan Rante Pasele
-date: "2025-09-27"
-image: "/berita/september/2025-09-27.jpg"
----
+# Penghulu KUA Rantepao Laksanakan Akad Nikah di Kelurahan Rante Pasele
+27 September 2025
 
 Rantepao, 27 September 2025 – Kantor Urusan Agama (KUA) Kecamatan Rantepao kembali memberikan pelayanan terbaik kepada masyarakat melalui pelaksanaan akad nikah di luar kantor. Pada Sabtu (27/9/2025), Penghulu KUA Rantepao, Syamsul Arifin, S.Ag., memimpin prosesi akad nikah pasangan Hermansyah dan Astry Azhari Junian di Kelurahan Rante Pasele, Kecamatan Rantepao, Kabupaten Toraja Utara.
 
@@ -13,3 +10,4 @@ Pelayanan nikah di luar kantor ini merupakan bagian dari komitmen KUA Rantepao d
 Dengan penyerahan buku nikah tersebut, pasangan Hermansyah dan Astry Azhari Junian resmi menjadi suami istri yang sah, baik menurut hukum Islam maupun hukum negara.
 
 ![Foto kegiatan](/berita/september/2025-09-27.jpg)
+
