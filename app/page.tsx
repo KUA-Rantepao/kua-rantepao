@@ -8,7 +8,7 @@ import { useState, useEffect } from 'react';
 // Komponen Jadwal Shalat (Tanpa Hijriyah)
 function WidgetJadwalShalat() {
   const [waktu, setWaktu] = useState({ masehi: '', jam: '' });
-  const [jadwal, setJadwal] = useState(null);
+  const [jadwal, setJadwal] = useState<any>(null);
   const [loadingJadwal, setLoadingJadwal] = useState(true);
   const [errorJadwal, setErrorJadwal] = useState(false);
 
@@ -21,7 +21,9 @@ function WidgetJadwalShalat() {
         month: 'long',
         day: 'numeric'
       });
-      const jam = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')}`;
+      const jam = `${String(now.getHours()).padStart(2, '0')}:${String(
+        now.getMinutes()
+      ).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')}`;
       setWaktu({ masehi, jam });
     };
 
@@ -41,7 +43,7 @@ function WidgetJadwalShalat() {
 
         const data = await response.json();
         const todayStr = `${year}-${month}-${String(today.getDate()).padStart(2, '0')}`;
-        const item = data.find(d => d.tanggal === todayStr);
+        const item = data.find((d: any) => d.tanggal === todayStr);
         setJadwal(item);
         setLoadingJadwal(false);
       } catch (err) {
@@ -54,66 +56,84 @@ function WidgetJadwalShalat() {
   }, []);
 
   return (
-    <section style={{
-      marginTop: '2rem',
-      padding: '1.5rem',
-      backgroundColor: '#fff',
-      borderRadius: '8px',
-      boxShadow: '0 2px 10px rgba(0,0,0,0.05)',
-      textAlign: 'center'
-    }}>
-      <h2 style={{
-        fontSize: '1.25rem',
-        fontWeight: 'bold',
-        color: '#1f2937',
-        marginBottom: '1rem'
-      }}>
+    <section
+      style={{
+        marginTop: '2rem',
+        padding: '1.5rem',
+        backgroundColor: '#fff',
+        borderRadius: '8px',
+        boxShadow: '0 2px 10px rgba(0,0,0,0.05)',
+        textAlign: 'center'
+      }}
+    >
+      <h2
+        style={{
+          fontSize: '1.25rem',
+          fontWeight: 'bold',
+          color: '#1f2937',
+          marginBottom: '1rem'
+        }}
+      >
         🕰️ Jadwal Shalat Kab. Toraja Utara
       </h2>
 
-      <div style={{
-        fontSize: '1.1rem',
-        fontWeight: 'bold',
-        color: '#16a34a',
-        marginBottom: '1rem',
-        minHeight: '3rem'
-      }}>
+      <div
+        style={{
+          fontSize: '1.1rem',
+          fontWeight: 'bold',
+          color: '#16a34a',
+          marginBottom: '1rem',
+          minHeight: '3rem'
+        }}
+      >
         <div>{waktu.masehi}</div>
         <div style={{ marginTop: '0.5rem' }}>{waktu.jam}</div>
       </div>
 
-      <div style={{
-        textAlign: 'left',
-        maxWidth: '300px',
-        margin: '0 auto',
-        fontSize: '1rem',
-        color: '#1f2937',
-        minHeight: '12rem'
-      }}>
+      <div
+        style={{
+          textAlign: 'left',
+          maxWidth: '300px',
+          margin: '0 auto',
+          fontSize: '1rem',
+          color: '#1f2937',
+          minHeight: '12rem'
+        }}
+      >
         {loadingJadwal ? (
           'Memuat jadwal shalat...'
         ) : errorJadwal ? (
           'Gagal memuat jadwal shalat.'
         ) : jadwal ? (
-          ['imsak', 'subuh', 'duha', 'dzuhur', 'ashar', 'maghrib', 'isya'].map(waktu => (
-            jadwal[waktu] && (
-              <div key={waktu} style={{ display: 'flex', justifyContent: 'space-between', margin: '4px 0' }}>
-                <span>{waktu.toUpperCase()}</span>
-                <strong>{jadwal[waktu]}</strong>
-              </div>
-            )
-          ))
+          ['imsak', 'subuh', 'duha', 'dzuhur', 'ashar', 'maghrib', 'isya'].map(
+            (waktu) =>
+              jadwal[waktu] && (
+                <div
+                  key={waktu}
+                  style={{
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    margin: '4px 0'
+                  }}
+                >
+                  <span>{waktu.toUpperCase()}</span>
+                  <strong>{jadwal[waktu]}</strong>
+                </div>
+              )
+          )
         ) : (
           'Jadwal belum tersedia.'
         )}
       </div>
 
-      <div style={{
-        marginTop: '1rem',
-        fontSize: '0.875rem',
-        color: '#6b7280'
-      }}>
-        Sumber:{" "}
+      <div
+        style={{
+          marginTop: '1rem',
+          fontSize: '0.875rem',
+          color: '#6b7280'
+        }}
+      >
+        Sumber:{' '}
         <a
           href="https://bimasislam.kemenag.go.id/web/jadwalshalat"
           target="_blank"
@@ -133,9 +153,7 @@ export default function Home() {
   const [showPopup, setShowPopup] = useState(false);
 
   useEffect(() => {
-    const checkScreenSize = () => {
-      setIsMobile(window.innerWidth < 768);
-    };
+    const checkScreenSize = () => setIsMobile(window.innerWidth < 768);
     checkScreenSize();
     window.addEventListener('resize', checkScreenSize);
     return () => window.removeEventListener('resize', checkScreenSize);
@@ -143,9 +161,7 @@ export default function Home() {
 
   useEffect(() => {
     const popupClosed = sessionStorage.getItem('popupClosed');
-    if (!popupClosed) {
-      setShowPopup(true);
-    }
+    if (!popupClosed) setShowPopup(true);
   }, []);
 
   const closePopup = () => {
@@ -156,24 +172,26 @@ export default function Home() {
   const menuItems = [
     { name: 'Beranda', href: '/', active: true },
     { name: 'Profil Organisasi', href: '/profil-organisasi' },
-    { name: 'Visi & Misi', href: 'visi-misi' },
+    { name: 'Visi & Misi', href: '/visi-misi' },
     { name: 'Struktur Organisasi', href: '/struktur-organisasi' },
     { name: 'Layanan Nikah', href: '/layanan-nikah' },
-    { name: 'Konsultasi & Bimbingan', href: '#' },
+    { name: 'Konsultasi & Bimbingan', href: 'https://konsultasi-agama-islam.vercel.app/' },
     { name: 'Panduan SIMKAH', href: '#' },
-    { name: 'Berita', href: '/berita' },
+    { name: 'Berita', href: '/berita' }
   ];
 
   return (
-    <div style={{
-      fontFamily: 'Arial, sans-serif',
-      backgroundColor: '#f9fafb',
-      padding: '1rem',
-      maxWidth: '1200px',
-      margin: '0 auto',
-      position: 'relative'
-    }}>
-      {/* Logo Kemenag + Nama KUA */}
+    <div
+      style={{
+        fontFamily: 'Arial, sans-serif',
+        backgroundColor: '#f9fafb',
+        padding: '1rem',
+        maxWidth: '1200px',
+        margin: '0 auto',
+        position: 'relative'
+      }}
+    >
+      {/* Logo dan Nama KUA */}
       <Link
         href="/"
         style={{
@@ -187,80 +205,67 @@ export default function Home() {
           zIndex: 10
         }}
       >
-        <div style={{
-          width: '60px',
-          height: '60px',
-          borderRadius: '8px',
-          overflow: 'hidden',
-          border: '1px solid #ddd',
-          boxShadow: '0 2px 5px rgba(0,0,0,0.1)'
-        }}>
-          <Image
-            src="/logo.png"
-            alt="Logo Kemenag"
-            width={60}
-            height={60}
-            style={{
-              width: '100%',
-              height: '100%',
-              objectFit: 'cover'
-            }}
-          />
-        </div>
+        <Image
+          src="/logo.png"
+          alt="Logo Kemenag"
+          width={60}
+          height={60}
+          style={{
+            borderRadius: '8px',
+            border: '1px solid #ddd',
+            boxShadow: '0 2px 5px rgba(0,0,0,0.1)'
+          }}
+        />
         <div>
-          <div style={{
-            fontSize: '1rem',
-            fontWeight: 'bold',
-            color: '#1f2937'
-          }}>
-            KUA Rantepao
-          </div>
-          <div style={{
-            fontSize: '0.875rem',
-            color: '#6b7280'
-          }}>
-            Kab. Toraja Utara
-          </div>
+          <div style={{ fontSize: '1rem', fontWeight: 'bold', color: '#1f2937' }}>KUA Rantepao</div>
+          <div style={{ fontSize: '0.875rem', color: '#6b7280' }}>Kab. Toraja Utara</div>
         </div>
       </Link>
-      
-      {/* Teks Berjalan - Informasi Penting (Versi Hijau Tua) */}
-      <div
-  style={{
-    width: '100%',
-    overflow: 'hidden',
-    whiteSpace: 'nowrap',
-    backgroundColor: '#16a34a',
-    padding: '0.5rem 0'
-  }}
->
-  <div
-    style={{
-      display: 'inline-block',
-      paddingLeft: '100%',
-      animation: 'marquee 15s linear infinite',
-      color: '#ffffff',
-      fontWeight: 'bold'
-    }}
-  >
-    Selamat datang di website resmi KUA Kecamatan Rantepao — Kabupaten Toraja Utara 🌿
-  </div>
 
-  <style jsx>{`
-    @keyframes marquee {
-      0% { transform: translate(0, 0); }
-      100% { transform: translate(-100%, 0); }
-    }
-  `}</style>
-</div>
-      
+      {/* Teks Berjalan */}
+      <div
+        style={{
+          width: '100%',
+          overflow: 'hidden',
+          whiteSpace: 'nowrap',
+          backgroundColor: '#16a34a',
+          padding: '0.5rem 0',
+          marginTop: '5rem',
+          borderRadius: '6px'
+        }}
+      >
+        <div
+          style={{
+            display: 'inline-block',
+            paddingLeft: '100%',
+            animation: 'marquee 18s linear infinite',
+            color: '#ffffff',
+            fontWeight: 'bold'
+          }}
+        >
+          Akad Nikah di Kantor KUA Gratis/tidak dipungut biaya apapun. Akad Nikah di Luar Kantor KUA dikenakan biaya Rp. 600.000. 🌿 Selamat datang di website resmi KUA Kecamatan Rantepao — Kabupaten Toraja Utara.
+        </div>
+
+        <style jsx>{`
+          @keyframes marquee {
+            0% {
+              transform: translate(0, 0);
+            }
+            100% {
+              transform: translate(-100%, 0);
+            }
+          }
+        `}</style>
+      </div>
+
       {/* Navbar */}
-      <nav style={{
-        borderBottom: '1px solid #e5e7eb',
-        paddingBottom: '1rem',
-        marginBottom: '2rem',
-        marginTop: '5rem'
-      }}>
+      <nav
+        style={{
+          borderBottom: '1px solid #e5e7eb',
+          paddingBottom: '1rem',
+          marginBottom: '2rem'
+        }}
+      >
         {isMobile && (
           <button
             onClick={() => setIsMenuOpen(!isMenuOpen)}
@@ -277,52 +282,37 @@ export default function Home() {
           </button>
         )}
 
-        <ul style={{
-          listStyle: 'none',
-          margin: 0,
-          padding: 0,
-          display: isMobile ? (isMenuOpen ? 'flex' : 'none') : 'flex',
-          flexDirection: isMobile ? 'column' : 'row',
-          flexWrap: isMobile ? 'nowrap' : 'wrap',
-          gap: isMobile ? '1rem' : '1rem'
-        }}>
+        <ul
+          style={{
+            listStyle: 'none',
+            margin: 0,
+            padding: 0,
+            display: isMobile ? (isMenuOpen ? 'flex' : 'none') : 'flex',
+            flexDirection: isMobile ? 'column' : 'row',
+            gap: '1rem'
+          }}
+        >
           {menuItems.map((item) => (
             <li key={item.name}>
-              {item.name === 'Konsultasi & Bimbingan' ? (
-                <a
-                  href="https://konsultasi-agama-islam.vercel.app/"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  style={{
-                    fontWeight: 'normal',
-                    color: '#4b5563',
-                    textDecoration: 'none',
-                    display: 'inline-block',
-                    padding: '0.25rem 0'
-                  }}
-                >
-                  {item.name}
-                </a>
-              ) : (
-                <Link
-                  href={item.href}
-                  style={{
-                    fontWeight: item.active ? 'bold' : 'normal',
-                    color: item.active ? '#1f2937' : '#4b5563',
-                    borderBottom: item.active ? '2px solid #16a34a' : 'none',
-                    textDecoration: 'none',
-                    display: 'inline-block',
-                    padding: '0.25rem 0'
-                  }}
-                >
-                  {item.name}
-                </Link>
-              )}
+              <Link
+                href={item.href}
+                target={item.href.startsWith('http') ? '_blank' : '_self'}
+                rel={item.href.startsWith('http') ? 'noopener noreferrer' : undefined}
+                style={{
+                  fontWeight: item.active ? 'bold' : 'normal',
+                  color: item.active ? '#1f2937' : '#4b5563',
+                  borderBottom: item.active ? '2px solid #16a34a' : 'none',
+                  textDecoration: 'none',
+                  display: 'inline-block',
+                  padding: '0.25rem 0'
+                }}
+              >
+                {item.name}
+              </Link>
             </li>
           ))}
         </ul>
       </nav>
-
       {/* Foto Kepala KUA */}
       <div style={{
         width: '100%',
