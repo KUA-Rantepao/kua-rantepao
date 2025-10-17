@@ -227,40 +227,57 @@ useEffect(() => {
         </div>
       </Link>
 
-{/* Teks Berjalan - Looping Mulus */}
-<div style={{
-  marginTop: '4rem',
-  textAlign: 'center',
-  padding: '0.6rem 0',
-  backgroundColor: '#166534',
-  borderRadius: '6px',
-  overflow: 'hidden',
-  whiteSpace: 'nowrap',
-  position: 'relative'
-}}>
-  <div style={{
-    display: 'inline-block',
-    animation: 'scrollText 20s linear infinite',
-    color: '#ffffff',
-    fontWeight: 'bold',
-    fontSize: '0.95rem'
-  }}>
-    <span>
-      Akad Nikah di Kantor KUA Gratis/tidak dipungut biaya apapun. Akad Nikah di Luar Kantor KUA dikenakan biaya Rp. 600.000.&nbsp;
-    </span>
-    <span>
-      Akad Nikah di Kantor KUA Gratis/tidak dipungut biaya apapun. Akad Nikah di Luar Kantor KUA dikenakan biaya Rp. 600.000.&nbsp;
-    </span>
-  </div>
-</div>
+{/* Teks Berjalan - JavaScript (Looping Mulus, Tanpa Marquee) */}
+<div
+  ref={(el) => {
+    if (el && !el.hasAttribute('data-initialized')) {
+      el.setAttribute('data-initialized', 'true');
 
-      {/* Style Global untuk Animasi */}
-      <style jsx global>{`
-        @keyframes scrollText {
-          0% { transform: translateX(100%); }
-          100% { transform: translateX(-100%); }
+      const text = "Akad Nikah di Kantor KUA Gratis/tidak dipungut biaya apapun. Akad Nikah di Luar Kantor KUA dikenakan biaya Rp. 600.000. ";
+      const container = el;
+      const content = document.createElement('div');
+      content.style.display = 'inline-block';
+      content.style.whiteSpace = 'nowrap';
+      content.style.paddingLeft = '100%'; // Mulai dari luar kanan
+      content.textContent = text + text; // Duplikat untuk looping
+
+      container.appendChild(content);
+
+      let position = 0;
+      const speed = 1; // pixel per frame (atur kecepatan di sini)
+
+      function animate() {
+        position -= speed;
+        content.style.transform = `translateX(${position}px)`;
+
+        // Reset posisi saat teks pertama benar-benar keluar
+        if (position <= -content.scrollWidth / 2) {
+          position = 0;
         }
-      `}</style>
+
+        requestAnimationFrame(animate);
+      }
+
+      // Mulai animasi
+      animate();
+    }
+  }}
+  style={{
+    marginTop: '4rem',
+    textAlign: 'center',
+    padding: '0.6rem 0',
+    backgroundColor: '#166534',
+    borderRadius: '6px',
+    overflow: 'hidden',
+    whiteSpace: 'nowrap',
+    position: 'relative',
+    width: '100%',
+    fontSize: '0.95rem',
+    fontWeight: 'bold',
+    color: '#ffffff',
+    lineHeight: 1.4,
+  }}
+/>
 
       {/* Navbar */}
       <nav
