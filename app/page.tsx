@@ -159,10 +159,15 @@ export default function Home() {
     return () => window.removeEventListener('resize', checkScreenSize);
   }, []);
 
-  useEffect(() => {
-    const popupClosed = sessionStorage.getItem('popupClosed');
-    if (!popupClosed) setShowPopup(true);
-  }, []);
+useEffect(() => {
+  const popupClosed = sessionStorage.getItem('popupClosed');
+  if (!popupClosed) {
+    const timer = setTimeout(() => {
+      setShowPopup(true);
+    }, 2500); // Delay 2.5 detik
+    return () => clearTimeout(timer);
+  }
+}, []);
 
   const closePopup = () => {
     setShowPopup(false);
@@ -222,27 +227,32 @@ export default function Home() {
         </div>
       </Link>
 
-      {/* Teks Berjalan - Versi CSS */}
-      <div style={{
-        marginTop: '4rem',
-        textAlign: 'center',
-        padding: '0.6rem 0',
-        backgroundColor: '#166534',
-        borderRadius: '6px',
-        overflow: 'hidden',
-        whiteSpace: 'nowrap',
-        position: 'relative'
-      }}>
-        <div style={{
-          display: 'inline-block',
-          animation: 'scrollText 20s linear infinite',
-          color: '#ffffff',
-          fontWeight: 'bold',
-          fontSize: '0.95rem'
-        }}>
-          Akad Nikah di Kantor KUA Gratis/tidak dipungut biaya apapun. Akad Nikah di Luar Kantor KUA dikenakan biaya Rp. 600.000.
-        </div>
-      </div>
+{/* Teks Berjalan - Looping Mulus */}
+<div style={{
+  marginTop: '4rem',
+  textAlign: 'center',
+  padding: '0.6rem 0',
+  backgroundColor: '#166534',
+  borderRadius: '6px',
+  overflow: 'hidden',
+  whiteSpace: 'nowrap',
+  position: 'relative'
+}}>
+  <div style={{
+    display: 'inline-block',
+    animation: 'scrollText 20s linear infinite',
+    color: '#ffffff',
+    fontWeight: 'bold',
+    fontSize: '0.95rem'
+  }}>
+    <span>
+      Akad Nikah di Kantor KUA Gratis/tidak dipungut biaya apapun. Akad Nikah di Luar Kantor KUA dikenakan biaya Rp. 600.000.&nbsp;
+    </span>
+    <span>
+      Akad Nikah di Kantor KUA Gratis/tidak dipungut biaya apapun. Akad Nikah di Luar Kantor KUA dikenakan biaya Rp. 600.000.&nbsp;
+    </span>
+  </div>
+</div>
 
       {/* Style Global untuk Animasi */}
       <style jsx global>{`
