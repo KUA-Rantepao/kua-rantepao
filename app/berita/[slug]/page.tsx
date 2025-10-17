@@ -1,4 +1,4 @@
-import { getBeritaBySlug, getAllBerita } from '../../../lib/berita'
+import { getBeritaBySlug, getAllBerita } from '../../../lib/berita.ts'
 import { notFound } from 'next/navigation'
 import Image from 'next/image'
 import Link from 'next/link'
@@ -90,3 +90,4 @@ export async function generateMetadata({ params }: Props) {
     description: berita.isi.slice(0, 160) + '...',
   }
 }
+
