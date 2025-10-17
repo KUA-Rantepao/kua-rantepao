@@ -3,9 +3,9 @@
 
 import Image from 'next/image';
 import Link from 'next/link';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 
-// 🔹 Komponen Jadwal Shalat (tanpa Hijriyah)
+// 🔹 Komponen Jadwal Shalat
 function WidgetJadwalShalat() {
   const [waktu, setWaktu] = useState({ masehi: '', jam: '' });
   const [jadwal, setJadwal] = useState(null);
@@ -39,7 +39,6 @@ function WidgetJadwalShalat() {
         const month = String(today.getMonth() + 1).padStart(2, '0');
         const response = await fetch(`/jadwal-shalat/jadwal-shalat-${month}-${year}.json`);
         if (!response.ok) throw new Error('File tidak ditemukan');
-
         const data = await response.json();
         const todayStr = `${year}-${month}-${String(today.getDate()).padStart(2, '0')}`;
         const item = data.find((d) => d.tanggal === todayStr);
@@ -150,6 +149,7 @@ export default function Home() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   const [showPopup, setShowPopup] = useState(false);
+  const textRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const checkScreen = () => setIsMobile(window.innerWidth < 768);
@@ -164,6 +164,33 @@ export default function Home() {
       const timer = setTimeout(() => setShowPopup(true), 2500);
       return () => clearTimeout(timer);
     }
+  }, []);
+
+  // 🔥 Animasi teks berjalan dengan setInterval (100% jalan)
+  useEffect(() => {
+    const el = textRef.current;
+    if (!el) return;
+
+    let position = 0;
+    const speed = 1; // pixel per tick
+    const text = "Akad Nikah di Kantor KUA Gratis/tidak dipungut biaya apapun. Akad Nikah di Luar Kantor KUA dikenakan biaya Rp. 600.000. ";
+
+    // Duplikat teks agar looping mulus
+    el.textContent = text + text;
+
+    const move = () => {
+      position -= speed;
+      el.style.transform = `translateX(${position}px)`;
+
+      // Reset saat teks pertama benar-benar keluar
+      if (position <= -el.scrollWidth / 2) {
+        position = 0;
+      }
+    };
+
+    const interval = setInterval(move, 30); // ~33 FPS
+
+    return () => clearInterval(interval);
   }, []);
 
   const closePopup = () => {
@@ -194,7 +221,7 @@ export default function Home() {
         position: 'relative',
       }}
     >
-      {/* 🔰 Logo dan Judul */}
+      {/* Logo */}
       <Link
         href="/"
         style={{
@@ -229,7 +256,7 @@ export default function Home() {
         </div>
       </Link>
 
-      {/* 🟢 TEKS BERJALAN - CSS Animation Global (Pasti Jalan) */}
+      {/* 🟢 TEKS BERJALAN - JavaScript + setInterval (PASTI JALAN) */}
       <div
         style={{
           backgroundColor: '#166534',
@@ -245,18 +272,15 @@ export default function Home() {
         }}
       >
         <div
+          ref={textRef}
           style={{
             display: 'inline-block',
-            animation: 'marquee 25s linear infinite',
             minWidth: '100%',
           }}
-        >
-          Akad Nikah di Kantor KUA Gratis/tidak dipungut biaya apapun. Akad Nikah di Luar Kantor KUA dikenakan biaya Rp. 600.000.&nbsp;&nbsp;
-          Akad Nikah di Kantor KUA Gratis/tidak dipungut biaya apapun. Akad Nikah di Luar Kantor KUA dikenakan biaya Rp. 600.000.&nbsp;&nbsp;
-        </div>
+        />
       </div>
 
-      {/* 🔸 Navbar */}
+      {/* Sisanya tidak berubah — navbar, foto, dll */}
       <nav
         style={{
           borderBottom: '1px solid #e5e7eb',
@@ -329,7 +353,6 @@ export default function Home() {
         </ul>
       </nav>
 
-      {/* Foto Kepala KUA */}
       <div
         style={{
           width: '100%',
@@ -356,7 +379,6 @@ export default function Home() {
         />
       </div>
 
-      {/* Nama Kepala KUA */}
       <div
         style={{
           textAlign: 'center',
@@ -378,7 +400,6 @@ export default function Home() {
         Kepala KUA Rantepao
       </div>
 
-      {/* Alamat & Peta */}
       <div
         style={{
           backgroundColor: '#fff',
@@ -421,7 +442,6 @@ export default function Home() {
         </div>
       </div>
 
-      {/* Maklumat Pelayanan - Gambar */}
       <section style={{ marginTop: '2rem', textAlign: 'center' }}>
         <div
           style={{
@@ -447,10 +467,8 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Widget Jadwal Shalat */}
       <WidgetJadwalShalat />
 
-      {/* Headline Berita */}
       <section
         style={{
           marginTop: '2rem',
@@ -502,7 +520,6 @@ export default function Home() {
         </p>
       </section>
 
-      {/* Footer */}
       <footer
         style={{
           textAlign: 'center',
@@ -513,7 +530,6 @@ export default function Home() {
           borderRadius: '8px',
         }}
       >
-        {/* Media Sosial */}
         <div style={{ marginBottom: '1.5rem' }}>
           <h3
             style={{
@@ -579,7 +595,6 @@ export default function Home() {
           </div>
         </div>
 
-        {/* KUA di Toraja Utara */}
         <div style={{ marginBottom: '1.5rem' }}>
           <h3
             style={{
@@ -638,7 +653,6 @@ export default function Home() {
           </div>
         </div>
 
-        {/* Link Terkait */}
         <div style={{ marginBottom: '1.5rem' }}>
           <h3
             style={{
@@ -733,13 +747,11 @@ export default function Home() {
           </div>
         </div>
 
-        {/* Copyright */}
         <div style={{ fontSize: '0.875rem', opacity: 0.9 }}>
           © 2025 KUA Rantepao — Kabupaten Toraja Utara
         </div>
       </footer>
 
-      {/* Popup Selamat Datang */}
       {showPopup && (
         <div
           style={{
@@ -806,18 +818,6 @@ export default function Home() {
           </div>
         </div>
       )}
-
-      {/* 🔥 Animasi Global untuk Teks Berjalan — WAJIB DI SINI */}
-      <style jsx global>{`
-        @keyframes marquee {
-          0% {
-            transform: translateX(100%);
-          }
-          100% {
-            transform: translateX(-100%);
-          }
-        }
-      `}</style>
     </div>
   );
 }
