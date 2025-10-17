@@ -225,26 +225,35 @@ export default function Home() {
       </Link>
       
       {/* Teks Berjalan - Informasi Penting (Versi Hijau Tua) */}
-      <div style={{
-        marginTop: '4rem',
-        textAlign: 'center',
-        padding: '0.6rem 0',
-        backgroundColor: '#166534', // Hijau tua
-        borderRadius: '6px',
-        overflow: 'hidden'
-      }}>
-        <marquee behavior="scroll" direction="left" scrollamount="4">
-          <span style={{
-            color: '#ffffff',
-            fontWeight: 'bold',
-            fontSize: '0.95rem',
-            whiteSpace: 'nowrap'
-          }}>
-            Akad Nikah di Kantor KUA Gratis/tidak dipungut biaya apapun. Akad Nikah di Luar Kantor KUA dikenakan biaya Rp. 600.000.
-          </span>
-        </marquee>
-      </div>
+      <div
+  style={{
+    width: '100%',
+    overflow: 'hidden',
+    whiteSpace: 'nowrap',
+    backgroundColor: '#16a34a',
+    padding: '0.5rem 0'
+  }}
+>
+  <div
+    style={{
+      display: 'inline-block',
+      paddingLeft: '100%',
+      animation: 'marquee 15s linear infinite',
+      color: '#ffffff',
+      fontWeight: 'bold'
+    }}
+  >
+    Selamat datang di website resmi KUA Kecamatan Rantepao — Kabupaten Toraja Utara 🌿
+  </div>
 
+  <style jsx>{`
+    @keyframes marquee {
+      0% { transform: translate(0, 0); }
+      100% { transform: translate(-100%, 0); }
+    }
+  `}</style>
+</div>
+      
       {/* Navbar */}
       <nav style={{
         borderBottom: '1px solid #e5e7eb',
