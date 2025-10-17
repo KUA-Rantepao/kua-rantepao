@@ -151,7 +151,9 @@ export default function Home() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   const [showPopup, setShowPopup] = useState(false);
-
+  const marqueeRef = useRef<HTMLDivElement>(null);
+  import { useState, useEffect, useRef } from 'react';
+  
   useEffect(() => {
     const checkScreenSize = () => setIsMobile(window.innerWidth < 768);
     checkScreenSize();
@@ -169,6 +171,34 @@ useEffect(() => {
   }
 }, []);
 
+  useEffect(() => {
+  const container = marqueeRef.current;
+  if (!container) return;
+
+  let position = 0;
+  const speed = 1;
+  const halfWidth = container.scrollWidth / 2;
+  let animationId: number;
+
+  const animate = () => {
+    position -= speed;
+    container.style.transform = `translateX(${position}px)`;
+    if (position <= -halfWidth) {
+      position = 0;
+    }
+    animationId = requestAnimationFrame(animate);
+  };
+
+  const startTimer = setTimeout(() => {
+    animate();
+  }, 100);
+
+  return () => {
+    clearTimeout(startTimer);
+    if (animationId) cancelAnimationFrame(animationId);
+  };
+}, []);
+  
   const closePopup = () => {
     setShowPopup(false);
     sessionStorage.setItem('popupClosed', 'true');
@@ -229,39 +259,6 @@ useEffect(() => {
 
 {/* Teks Berjalan - JavaScript (Looping Mulus, Tanpa Marquee) */}
 <div
-  ref={(el) => {
-    if (el && !el.hasAttribute('data-initialized')) {
-      el.setAttribute('data-initialized', 'true');
-
-      const text = "Akad Nikah di Kantor KUA Gratis/tidak dipungut biaya apapun. Akad Nikah di Luar Kantor KUA dikenakan biaya Rp. 600.000. ";
-      const container = el;
-      const content = document.createElement('div');
-      content.style.display = 'inline-block';
-      content.style.whiteSpace = 'nowrap';
-      content.style.paddingLeft = '100%'; // Mulai dari luar kanan
-      content.textContent = text + text; // Duplikat untuk looping
-
-      container.appendChild(content);
-
-      let position = 0;
-      const speed = 1; // pixel per frame (atur kecepatan di sini)
-
-      function animate() {
-        position -= speed;
-        content.style.transform = `translateX(${position}px)`;
-
-        // Reset posisi saat teks pertama benar-benar keluar
-        if (position <= -content.scrollWidth / 2) {
-          position = 0;
-        }
-
-        requestAnimationFrame(animate);
-      }
-
-      // Mulai animasi
-      animate();
-    }
-  }}
   style={{
     marginTop: '4rem',
     textAlign: 'center',
@@ -270,14 +267,17 @@ useEffect(() => {
     borderRadius: '6px',
     overflow: 'hidden',
     whiteSpace: 'nowrap',
-    position: 'relative',
     width: '100%',
     fontSize: '0.95rem',
     fontWeight: 'bold',
     color: '#ffffff',
-    lineHeight: 1.4,
   }}
-/>
+>
+  <div ref={marqueeRef} style={{ display: 'inline-block', whiteSpace: 'nowrap' }}>
+    Akad Nikah di Kantor KUA Gratis/tidak dipungut biaya apapun. Akad Nikah di Luar Kantor KUA dikenakan biaya Rp. 600.000.&nbsp;&nbsp;
+    Akad Nikah di Kantor KUA Gratis/tidak dipungut biaya apapun. Akad Nikah di Luar Kantor KUA dikenakan biaya Rp. 600.000.&nbsp;&nbsp;
+  </div>
+</div>
 
       {/* Navbar */}
       <nav
