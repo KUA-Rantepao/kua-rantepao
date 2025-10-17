@@ -166,27 +166,26 @@ export default function Home() {
     }
   }, []);
 
-  // 🔥 Animasi teks berjalan dengan setInterval (100% jalan)
+  // 🔥 Animasi teks berjalan: satu teks, reset instan saat habis
   useEffect(() => {
     const el = textRef.current;
-    if (!el) return;
+    if (!el || !el.parentElement) return;
 
-    let position = 0;
-    const speed = 1; // pixel per tick
-    const text = "Akad Nikah di Kantor KUA Gratis/tidak dipungut biaya apapun. Akad Nikah di Luar Kantor KUA dikenakan biaya Rp. 600.000. ";
+    let position = el.parentElement.offsetWidth; // mulai dari kanan luar
+    const textWidth = el.scrollWidth;
+    const containerWidth = el.parentElement.offsetWidth;
 
     const move = () => {
-      position -= speed;
+      position -= 1; // kecepatan: 1px per tick
       el.style.transform = `translateX(${position}px)`;
 
-      // Reset saat teks pertama benar-benar keluar
-      if (position <= -el.scrollWidth / 2) {
-        position = 0;
+      // Saat seluruh teks sudah keluar layar (ujung kiri < 0)
+      if (position + textWidth <= 0) {
+        position = containerWidth; // reset ke kanan
       }
     };
 
     const interval = setInterval(move, 30); // ~33 FPS
-
     return () => clearInterval(interval);
   }, []);
 
@@ -253,7 +252,7 @@ export default function Home() {
         </div>
       </Link>
 
-      {/* 🟢 TEKS BERJALAN - JavaScript + setInterval (PASTI JALAN) */}
+      {/* 🟢 TEKS BERJALAN - Satu teks, looping instan */}
       <div
         style={{
           backgroundColor: '#166534',
@@ -272,12 +271,13 @@ export default function Home() {
           ref={textRef}
           style={{
             display: 'inline-block',
-            minWidth: '100%',
           }}
-        />
+        >
+          Akad Nikah di Kantor KUA Gratis/tidak dipungut biaya apapun. Akad Nikah di Luar Kantor KUA dikenakan biaya Rp. 600.000.
+        </div>
       </div>
 
-      {/* Sisanya tidak berubah — navbar, foto, dll */}
+      {/* Navbar */}
       <nav
         style={{
           borderBottom: '1px solid #e5e7eb',
@@ -350,6 +350,7 @@ export default function Home() {
         </ul>
       </nav>
 
+      {/* Foto Kepala KUA */}
       <div
         style={{
           width: '100%',
@@ -376,6 +377,7 @@ export default function Home() {
         />
       </div>
 
+      {/* Nama Kepala KUA */}
       <div
         style={{
           textAlign: 'center',
@@ -397,6 +399,7 @@ export default function Home() {
         Kepala KUA Rantepao
       </div>
 
+      {/* Alamat & Peta */}
       <div
         style={{
           backgroundColor: '#fff',
@@ -427,7 +430,7 @@ export default function Home() {
           }}
         >
           <iframe
-            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3976.372838532148!2d119.8989188!3d-2.9677346!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2d93e9e17c202c2b%3A0xfa6826e932114410!2sKUA%20Kecamatan%20Rantepao!5e0!3m2!1sid!2sid!4v1720000000000!5m2!1sid!2sid"
+            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3976.372838532148!2d119.8989188!3d-2.9677346!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2d93e9e17c202c2b%3A0xfa6826e932114410!2sKUA%20Kecamatan%20Rantepao!5e0!3m2!1sid!2id!4v1720000000000!5m2!1sid!2id"
             width="100%"
             height="100%"
             style={{ border: 0 }}
@@ -439,6 +442,7 @@ export default function Home() {
         </div>
       </div>
 
+      {/* Maklumat Pelayanan */}
       <section style={{ marginTop: '2rem', textAlign: 'center' }}>
         <div
           style={{
@@ -466,6 +470,7 @@ export default function Home() {
 
       <WidgetJadwalShalat />
 
+      {/* Berita Terkini */}
       <section
         style={{
           marginTop: '2rem',
@@ -517,6 +522,7 @@ export default function Home() {
         </p>
       </section>
 
+      {/* Footer */}
       <footer
         style={{
           textAlign: 'center',
@@ -749,6 +755,7 @@ export default function Home() {
         </div>
       </footer>
 
+      {/* Popup */}
       {showPopup && (
         <div
           style={{
