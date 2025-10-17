@@ -175,9 +175,6 @@ export default function Home() {
     const speed = 1; // pixel per tick
     const text = "Akad Nikah di Kantor KUA Gratis/tidak dipungut biaya apapun. Akad Nikah di Luar Kantor KUA dikenakan biaya Rp. 600.000. ";
 
-    // Duplikat teks agar looping mulus
-    el.textContent = text + text;
-
     const move = () => {
       position -= speed;
       el.style.transform = `translateX(${position}px)`;
