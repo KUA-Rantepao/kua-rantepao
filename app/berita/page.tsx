@@ -1,21 +1,52 @@
 // app/berita/page.tsx
-'use client';
+// TANPA 'use client' → jalan di server
 
 import fs from 'fs';
 import path from 'path';
-import matter from 'gray-matter';
-import { marked } from 'marked';
-import Image from 'next/image';
 import Link from 'next/link';
 
-export default function BeritaPage() {
-  // Ambil path file berita
-  const filePath = path.join(process.cwd(), 'content/berita/2025-09-27-pelayanan-akad-nikah-rantepasele.md');
-  const fileContent = fs.readFileSync(filePath, 'utf8');
+// Fungsi baca semua berita
+function getAllBerita() {
+  const beritaDir = path.join(process.cwd(), 'content', 'berita');
+  if (!fs.existsSync(beritaDir)) return [];
 
-  // Gunakan gray-matter untuk memisahkan metadata & konten markdown
-  const { data, content } = matter(fileContent);
-  const htmlContent = marked(content);
+  const files = fs.readdirSync(beritaDir).filter(f => f.endsWith('.md'));
+  const beritaList = [];
+
+  for (const file of files) {
+    const slug = file.replace(/\.md$/, '');
+    const content = fs.readFileSync(path.join(beritaDir, file), 'utf8');
+    const lines = content.split('\n').map(l => l.trim());
+
+    // Ambil judul (baris pertama, hapus # jika ada)
+    let judul = lines[0] || 'Tanpa Judul';
+    if (judul.startsWith('# ')) judul = judul.slice(2);
+
+    // Ambil tanggal (baris kedua)
+    const tanggal = lines[1] || '';
+
+    // Ambil isi (gabung baris ke-3 dst)
+    const isi = lines.slice(2).join(' ');
+
+    // Ekstrak tanggal ISO dari nama file: ...-27-09-2025.md
+    const dateMatch = slug.match(/(\d{2})-(\d{2})-(\d{4})$/);
+    const tanggalISO = dateMatch ? `${dateMatch[3]}-${dateMatch[2]}-${dateMatch[1]}` : '';
+
+    // Path gambar: /berita/DD-MM-YYYY.jpg
+    const tanggalGambar = dateMatch ? `${dateMatch[1]}-${dateMatch[2]}-${dateMatch[3]}` : '';
+    const gambar = tanggalGambar ? `/berita/${tanggalGambar}.jpg` : '';
+
+    beritaList.push({ slug, judul, tanggal, isi, gambar, tanggalISO });
+  }
+
+  // Urutkan terbaru dulu
+  return beritaList
+    .filter(b => b.tanggalISO)
+    .sort((a, b) => b.tanggalISO.localeCompare(a.tanggalISO));
+}
+
+export default function BeritaPage() {
+  const beritaList = getAllBerita();
 
   return (
     <div
@@ -25,7 +56,7 @@ export default function BeritaPage() {
         padding: '1rem',
         maxWidth: '900px',
         margin: '0 auto',
-        position: 'relative'
+        position: 'relative',
       }}
     >
       {/* Logo + Nama KUA */}
@@ -39,7 +70,7 @@ export default function BeritaPage() {
           alignItems: 'center',
           gap: '0.75rem',
           textDecoration: 'none',
-          zIndex: 10
+          zIndex: 10,
         }}
       >
         <div
@@ -49,19 +80,15 @@ export default function BeritaPage() {
             borderRadius: '8px',
             overflow: 'hidden',
             border: '1px solid #ddd',
-            boxShadow: '0 2px 5px rgba(0,0,0,0.1)'
+            boxShadow: '0 2px 5px rgba(0,0,0,0.1)',
           }}
         >
-          <Image
+          <img
             src="/logo.png"
             alt="Logo Kemenag"
             width={60}
             height={60}
-            style={{
-              width: '100%',
-              height: '100%',
-              objectFit: 'cover'
-            }}
+            style={{ width: '100%', height: '100%', objectFit: 'cover' }}
           />
         </div>
         <div>
@@ -80,7 +107,7 @@ export default function BeritaPage() {
           borderBottom: '1px solid #e5e7eb',
           paddingBottom: '1rem',
           marginBottom: '2rem',
-          marginTop: '5rem'
+          marginTop: '5rem',
         }}
       >
         <Link href="/" style={{ color: '#4b5563', textDecoration: 'none' }}>
@@ -88,60 +115,69 @@ export default function BeritaPage() {
         </Link>
       </nav>
 
-      {/* Judul Berita */}
       <h1
         style={{
           fontSize: '2rem',
           fontWeight: 'bold',
           color: '#1f2937',
           textAlign: 'center',
-          marginBottom: '1rem'
+          marginBottom: '2rem',
         }}
       >
-        {data.title || 'Pelayanan Akad Nikah di Rantepasele'}
+        📰 Daftar Berita
       </h1>
 
-      {/* Tanggal */}
-      <p style={{ textAlign: 'center', color: '#6b7280', marginBottom: '2rem' }}>
-        {data.date || '27 September 2025'}
-      </p>
+      {beritaList.length === 0 ? (
+        <p style={{ textAlign: 'center', color: '#6b7280' }}>Belum ada berita.</p>
+      ) : (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
+          {beritaList.map((berita) => (
+            <Link
+              key={berita.slug}
+              href={`/berita/${berita.slug}`}
+              style={{
+                display: 'block',
+                textDecoration: 'none',
+                color: 'inherit',
+                padding: '1.5rem',
+                backgroundColor: '#fff',
+                borderRadius: '10px',
+                boxShadow: '0 2px 8px rgba(0,0,0,0.05)',
+              }}
+            >
+              {berita.gambar && (
+                <div style={{ marginBottom: '1rem', textAlign: 'center' }}>
+                  <img
+                    src={berita.gambar}
+                    alt={berita.judul}
+                    style={{
+                      width: '100%',
+                      maxWidth: '400px',
+                      height: 'auto',
+                      borderRadius: '8px',
+                      objectFit: 'cover',
+                    }}
+                  />
+                </div>
+              )}
+              <h2 style={{ fontSize: '1.5rem', fontWeight: 'bold', margin: '0 0 0.5rem' }}>
+                {berita.judul}
+              </h2>
+              <p style={{ color: '#6b7280', marginBottom: '0.5rem' }}>{berita.tanggal}</p>
+              <p style={{ color: '#4b5563', lineHeight: 1.6, display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
+                {berita.isi}
+              </p>
+            </Link>
+          ))}
+        </div>
+      )}
 
-      {/* Gambar Berita */}
-      <div
-        style={{
-          width: '100%',
-          marginBottom: '2rem',
-          borderRadius: '10px',
-          overflow: 'hidden',
-          boxShadow: '0 2px 10px rgba(0,0,0,0.05)'
-        }}
-      >
-        <Image
-          src="/berita/2025-09-27.jpg"
-          alt={data.title || 'Pelayanan Akad Nikah di Rantepasele'}
-          width={900}
-          height={600}
-          style={{ width: '100%', height: 'auto', display: 'block' }}
-        />
-      </div>
-
-      {/* Isi Berita */}
-      <article
-        style={{
-          color: '#4b5563',
-          lineHeight: 1.8,
-          textAlign: 'justify'
-        }}
-        dangerouslySetInnerHTML={{ __html: htmlContent }}
-      />
-
-      {/* Footer */}
       <footer
         style={{
           textAlign: 'center',
           marginTop: '3rem',
           color: '#6b7280',
-          fontSize: '0.875rem'
+          fontSize: '0.875rem',
         }}
       >
         © 2025 KUA Rantepao — Kabupaten Toraja Utara
