@@ -1,59 +1,92 @@
-// app/berita/[slug]/page.tsx
-import { getAllBerita } from '@/lib/berita.ts';
-import Image from 'next/image';
-import Link from 'next/link';
+import { getBeritaBySlug, getAllBerita } from '../../../lib/berita'
+import { notFound } from 'next/navigation'
+import Image from 'next/image'
+import Link from 'next/link'
 
-export async function generateStaticParams() {
-  const beritaList = getAllBerita();
-  return beritaList.map(b => ({ slug: b.slug }));
+interface Props {
+  params: {
+    slug: string
+  }
 }
 
-export default function DetailBerita({ params }: { params: { slug: string } }) {
-  const beritaList = getAllBerita();
-  const berita = beritaList.find(b => b.slug === params.slug);
+export default function BeritaDetailPage({ params }: Props) {
+  const berita = getBeritaBySlug(params.slug)
 
   if (!berita) {
-    return (
-      <div style={{ padding: '2rem', textAlign: 'center' }}>
-        <h2>Berita tidak ditemukan</h2>
-        <Link href="/berita" style={{ color: '#16a34a' }}>← Lihat semua berita</Link>
-      </div>
-    );
+    notFound()
   }
 
   return (
-    <div style={{ fontFamily: 'Arial, sans-serif', maxWidth: '800px', margin: '0 auto', padding: '1rem' }}>
-      <Link href="/berita" style={{ display: 'inline-block', marginBottom: '1rem', color: '#16a34a' }}>
-        ← Kembali ke Daftar Berita
+    <div className="container mx-auto px-4 py-8">
+      <Link 
+        href="/berita"
+        className="inline-flex items-center text-blue-600 hover:text-blue-800 mb-6"
+      >
+        ← Kembali ke Berita
       </Link>
 
-      <h1 style={{ fontSize: '1.75rem', fontWeight: 'bold', margin: '0 0 0.5rem' }}>
-        {berita.judul}
-      </h1>
-      <div style={{ fontSize: '0.95rem', color: '#6b7280', marginBottom: '1.5rem' }}>
-        {berita.tanggal}
-      </div>
+      <article className="max-w-4xl mx-auto">
+        <header className="mb-8">
+          <h1 className="text-3xl md:text-4xl font-bold mb-4">
+            {berita.judul}
+          </h1>
+          
+          <div className="flex items-center text-gray-600 mb-6">
+            <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+            </svg>
+            <span>
+              {berita.tanggal || new Date(berita.tanggalISO).toLocaleDateString('id-ID', {
+                weekday: 'long',
+                day: 'numeric',
+                month: 'long',
+                year: 'numeric'
+              })}
+            </span>
+          </div>
 
-      <div style={{ marginBottom: '1.5rem', textAlign: 'center' }}>
-        <Image
-          src={berita.gambar}
-          alt={berita.judul}
-          width={700}
-          height={400}
-          style={{ borderRadius: '8px', objectFit: 'cover' }}
-        />
-      </div>
+          {berita.gambar && (
+            <div className="relative h-96 rounded-lg overflow-hidden mb-6">
+              <Image
+                src={berita.gambar}
+                alt={berita.judul}
+                fill
+                className="object-cover"
+                priority
+              />
+            </div>
+          )}
+        </header>
 
-      <div style={{ lineHeight: 1.7, whiteSpace: 'pre-line' }}>
-        {berita.isi}
-      </div>
-
-      <div style={{ marginTop: '2rem' }}>
-        <Link href="/" style={{ color: '#16a34a', textDecoration: 'underline' }}>
-          ← Kembali ke Beranda
-        </Link>
-      </div>
+        <div className="prose prose-lg max-w-none">
+          <div className="whitespace-pre-line leading-relaxed text-gray-700">
+            {berita.isi}
+          </div>
+        </div>
+      </article>
     </div>
-  );
+  )
 }
 
+export async function generateStaticParams() {
+  const beritas = getAllBerita()
+  
+  return beritas.map((berita) => ({
+    slug: berita.slug,
+  }))
+}
+
+export async function generateMetadata({ params }: Props) {
+  const berita = getBeritaBySlug(params.slug)
+
+  if (!berita) {
+    return {
+      title: 'Berita Tidak Ditemukan - KUA Rantepao'
+    }
+  }
+
+  return {
+    title: `${berita.judul} | KUA Rantepao`,
+    description: berita.isi.slice(0, 160) + '...',
+  }
+}
