@@ -202,7 +202,7 @@ export default function Home() {
     { name: 'Layanan Nikah', href: '/layanan-nikah' },
     { name: 'Konsultasi & Bimbingan', href: 'https://konsultasi-agama-islam.vercel.app/' },
     { name: 'Panduan SIMKAH', href: '#' },
-    { name: 'Berita', href: '#' },
+    { name: 'Berita', href: '/berita' },
   ];
 
   return (
