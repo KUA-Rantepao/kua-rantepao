@@ -1,49 +1,7 @@
 // app/berita/page.tsx
-// TANPA 'use client' → jalan di server
-
-import fs from 'fs';
-import path from 'path';
-import Link from 'next/link';
-
-// Fungsi baca semua berita
-function getAllBerita() {
-  const beritaDir = path.join(process.cwd(), 'content', 'berita');
-  if (!fs.existsSync(beritaDir)) return [];
-
-  const files = fs.readdirSync(beritaDir).filter(f => f.endsWith('.md'));
-  const beritaList = [];
-
-  for (const file of files) {
-    const slug = file.replace(/\.md$/, '');
-    const content = fs.readFileSync(path.join(beritaDir, file), 'utf8');
-    const lines = content.split('\n').map(l => l.trim());
-
-    // Ambil judul (baris pertama, hapus # jika ada)
-    let judul = lines[0] || 'Tanpa Judul';
-    if (judul.startsWith('# ')) judul = judul.slice(2);
-
-    // Ambil tanggal (baris kedua)
-    const tanggal = lines[1] || '';
-
-    // Ambil isi (gabung baris ke-3 dst)
-    const isi = lines.slice(2).join(' ');
-
-    // Ekstrak tanggal ISO dari nama file: ...-27-09-2025.md
-    const dateMatch = slug.match(/(\d{2})-(\d{2})-(\d{4})$/);
-    const tanggalISO = dateMatch ? `${dateMatch[3]}-${dateMatch[2]}-${dateMatch[1]}` : '';
-
-    // Path gambar: /berita/DD-MM-YYYY.jpg
-    const tanggalGambar = dateMatch ? `${dateMatch[1]}-${dateMatch[2]}-${dateMatch[3]}` : '';
-    const gambar = tanggalGambar ? `/berita/${tanggalGambar}.jpg` : '';
-
-    beritaList.push({ slug, judul, tanggal, isi, gambar, tanggalISO });
-  }
-
-  // Urutkan terbaru dulu
-  return beritaList
-    .filter(b => b.tanggalISO)
-    .sort((a, b) => b.tanggalISO.localeCompare(a.tanggalISO));
-}
+import { getAllBerita } from '../../../lib/berita'
+import Link from 'next/link'
+import Image from 'next/image'
 
 export default function BeritaPage() {
   const beritaList = getAllBerita();
@@ -83,7 +41,7 @@ export default function BeritaPage() {
             boxShadow: '0 2px 5px rgba(0,0,0,0.1)',
           }}
         >
-          <img
+          <Image
             src="/logo.png"
             alt="Logo Kemenag"
             width={60}
@@ -147,9 +105,11 @@ export default function BeritaPage() {
             >
               {berita.gambar && (
                 <div style={{ marginBottom: '1rem', textAlign: 'center' }}>
-                  <img
+                  <Image
                     src={berita.gambar}
                     alt={berita.judul}
+                    width={400}
+                    height={200}
                     style={{
                       width: '100%',
                       maxWidth: '400px',
@@ -163,7 +123,13 @@ export default function BeritaPage() {
               <h2 style={{ fontSize: '1.5rem', fontWeight: 'bold', margin: '0 0 0.5rem' }}>
                 {berita.judul}
               </h2>
-              <p style={{ color: '#6b7280', marginBottom: '0.5rem' }}>{berita.tanggal}</p>
+              <p style={{ color: '#6b7280', marginBottom: '0.5rem' }}>
+                {berita.tanggal || new Date(berita.tanggalISO).toLocaleDateString('id-ID', {
+                  day: 'numeric',
+                  month: 'long',
+                  year: 'numeric'
+                })}
+              </p>
               <p style={{ color: '#4b5563', lineHeight: 1.6, display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
                 {berita.isi}
               </p>
