@@ -223,35 +223,43 @@ export default function Home() {
       </Link>
 
       {/* Teks Berjalan */}
-<div style={{
-  marginTop: '4rem',
-  textAlign: 'center',
-  padding: '0.6rem 0',
-  backgroundColor: '#166534',
-  borderRadius: '6px',
-  overflow: 'hidden',
-  whiteSpace: 'nowrap',
-  position: 'relative'
-}}>
-  <div style={{
-    display: 'inline-block',
-    animation: 'scrollText 20s linear infinite',
-    color: '#ffffff',
-    fontWeight: 'bold',
-    fontSize: '0.95rem'
-  }}>
+{/* Teks Berjalan */}
+<div
+  style={{
+    marginTop: '4rem',
+    textAlign: 'center',
+    padding: '0.6rem 0',
+    backgroundColor: '#166534',
+    borderRadius: '6px',
+    overflow: 'hidden',
+    whiteSpace: 'nowrap',
+    position: 'relative'
+  }}
+>
+  <div
+    style={{
+      display: 'inline-block',
+      animation: 'scrollText 20s linear infinite',
+      color: '#ffffff',
+      fontWeight: 'bold',
+      fontSize: '0.95rem'
+    }}
+  >
     Akad Nikah di Kantor KUA Gratis/tidak dipungut biaya apapun. Akad Nikah di Luar Kantor KUA dikenakan biaya Rp. 600.000.
   </div>
 </div>
 
-{/* Tambahkan style global untuk animasi */}
 <style jsx global>{`
   @keyframes scrollText {
-    0% { transform: translateX(100%); }
-    100% { transform: translateX(-100%); }
+    0% {
+      transform: translateX(100%);
+    }
+    100% {
+      transform: translateX(-100%);
+    }
   }
 `}</style>
-      </div>
+</div>
 
       {/* Navbar */}
       <nav
