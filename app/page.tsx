@@ -3,12 +3,12 @@
 
 import Image from 'next/image';
 import Link from 'next/link';
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 
-// Komponen Jadwal Shalat (Tanpa Hijriyah)
+// 🔹 Komponen Jadwal Shalat (tanpa Hijriyah)
 function WidgetJadwalShalat() {
   const [waktu, setWaktu] = useState({ masehi: '', jam: '' });
-  const [jadwal, setJadwal] = useState(null);
+  const [jadwal, setJadwal] = useState<any>(null);
   const [loadingJadwal, setLoadingJadwal] = useState(true);
   const [errorJadwal, setErrorJadwal] = useState(false);
 
@@ -19,14 +19,13 @@ function WidgetJadwalShalat() {
         weekday: 'long',
         year: 'numeric',
         month: 'long',
-        day: 'numeric'
+        day: 'numeric',
       });
       const jam = `${String(now.getHours()).padStart(2, '0')}:${String(
         now.getMinutes()
       ).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')}`;
       setWaktu({ masehi, jam });
     };
-
     updateWaktu();
     const interval = setInterval(updateWaktu, 1000);
     return () => clearInterval(interval);
@@ -43,7 +42,7 @@ function WidgetJadwalShalat() {
 
         const data = await response.json();
         const todayStr = `${year}-${month}-${String(today.getDate()).padStart(2, '0')}`;
-        const item = data.find((d) => d.tanggal === todayStr);
+        const item = data.find((d: any) => d.tanggal === todayStr);
         setJadwal(item);
         setLoadingJadwal(false);
       } catch (err) {
@@ -63,7 +62,7 @@ function WidgetJadwalShalat() {
         backgroundColor: '#fff',
         borderRadius: '8px',
         boxShadow: '0 2px 10px rgba(0,0,0,0.05)',
-        textAlign: 'center'
+        textAlign: 'center',
       }}
     >
       <h2
@@ -71,7 +70,7 @@ function WidgetJadwalShalat() {
           fontSize: '1.25rem',
           fontWeight: 'bold',
           color: '#1f2937',
-          marginBottom: '1rem'
+          marginBottom: '1rem',
         }}
       >
         🕰️ Jadwal Shalat Kab. Toraja Utara
@@ -83,7 +82,7 @@ function WidgetJadwalShalat() {
           fontWeight: 'bold',
           color: '#16a34a',
           marginBottom: '1rem',
-          minHeight: '3rem'
+          minHeight: '3rem',
         }}
       >
         <div>{waktu.masehi}</div>
@@ -97,7 +96,7 @@ function WidgetJadwalShalat() {
           margin: '0 auto',
           fontSize: '1rem',
           color: '#1f2937',
-          minHeight: '12rem'
+          minHeight: '12rem',
         }}
       >
         {loadingJadwal ? (
@@ -106,18 +105,18 @@ function WidgetJadwalShalat() {
           'Gagal memuat jadwal shalat.'
         ) : jadwal ? (
           ['imsak', 'subuh', 'duha', 'dzuhur', 'ashar', 'maghrib', 'isya'].map(
-            (waktu) =>
-              jadwal[waktu] && (
+            (w) =>
+              jadwal[w] && (
                 <div
-                  key={waktu}
+                  key={w}
                   style={{
                     display: 'flex',
                     justifyContent: 'space-between',
-                    margin: '4px 0'
+                    margin: '4px 0',
                   }}
                 >
-                  <span>{waktu.toUpperCase()}</span>
-                  <strong>{jadwal[waktu]}</strong>
+                  <span>{w.toUpperCase()}</span>
+                  <strong>{jadwal[w]}</strong>
                 </div>
               )
           )
@@ -130,7 +129,7 @@ function WidgetJadwalShalat() {
         style={{
           marginTop: '1rem',
           fontSize: '0.875rem',
-          color: '#6b7280'
+          color: '#6b7280',
         }}
       >
         Sumber:{' '}
@@ -151,53 +150,22 @@ export default function Home() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   const [showPopup, setShowPopup] = useState(false);
-  const marqueeRef = useRef<HTMLDivElement>(null);
-  
+
   useEffect(() => {
-    const checkScreenSize = () => setIsMobile(window.innerWidth < 768);
-    checkScreenSize();
-    window.addEventListener('resize', checkScreenSize);
-    return () => window.removeEventListener('resize', checkScreenSize);
+    const checkScreen = () => setIsMobile(window.innerWidth < 768);
+    checkScreen();
+    window.addEventListener('resize', checkScreen);
+    return () => window.removeEventListener('resize', checkScreen);
   }, []);
 
-useEffect(() => {
-  const popupClosed = sessionStorage.getItem('popupClosed');
-  if (!popupClosed) {
-    const timer = setTimeout(() => {
-      setShowPopup(true);
-    }, 2500); // Delay 2.5 detik
-    return () => clearTimeout(timer);
-  }
-}, []);
-
   useEffect(() => {
-  const container = marqueeRef.current;
-  if (!container) return;
-
-  let position = 0;
-  const speed = 1;
-  const halfWidth = container.scrollWidth / 2;
-  let animationId: number;
-
-  const animate = () => {
-    position -= speed;
-    container.style.transform = `translateX(${position}px)`;
-    if (position <= -halfWidth) {
-      position = 0;
+    const popupClosed = sessionStorage.getItem('popupClosed');
+    if (!popupClosed) {
+      const timer = setTimeout(() => setShowPopup(true), 2500);
+      return () => clearTimeout(timer);
     }
-    animationId = requestAnimationFrame(animate);
-  };
+  }, []);
 
-  const startTimer = setTimeout(() => {
-    animate();
-  }, 100);
-
-  return () => {
-    clearTimeout(startTimer);
-    if (animationId) cancelAnimationFrame(animationId);
-  };
-}, []);
-  
   const closePopup = () => {
     setShowPopup(false);
     sessionStorage.setItem('popupClosed', 'true');
@@ -211,7 +179,7 @@ useEffect(() => {
     { name: 'Layanan Nikah', href: '/layanan-nikah' },
     { name: 'Konsultasi & Bimbingan', href: 'https://konsultasi-agama-islam.vercel.app/' },
     { name: 'Panduan SIMKAH', href: '#' },
-    { name: 'Berita', href: '#' }
+    { name: 'Berita', href: '#' },
   ];
 
   return (
@@ -220,12 +188,13 @@ useEffect(() => {
         fontFamily: 'Arial, sans-serif',
         backgroundColor: '#f9fafb',
         padding: '1rem',
+        paddingTop: '6rem', // 🔹 Tambahkan jarak agar tidak tumpang tindih dengan logo
         maxWidth: '1200px',
         margin: '0 auto',
-        position: 'relative'
+        position: 'relative',
       }}
     >
-      {/* Logo dan Nama KUA */}
+      {/* 🔰 Logo dan Judul */}
       <Link
         href="/"
         style={{
@@ -236,7 +205,7 @@ useEffect(() => {
           alignItems: 'center',
           gap: '0.75rem',
           textDecoration: 'none',
-          zIndex: 10
+          zIndex: 20,
         }}
       >
         <Image
@@ -247,32 +216,63 @@ useEffect(() => {
           style={{
             borderRadius: '8px',
             border: '1px solid #ddd',
-            boxShadow: '0 2px 5px rgba(0,0,0,0.1)'
+            boxShadow: '0 2px 5px rgba(0,0,0,0.1)',
           }}
         />
         <div>
-          <div style={{ fontSize: '1rem', fontWeight: 'bold', color: '#1f2937' }}>KUA Rantepao</div>
-          <div style={{ fontSize: '0.875rem', color: '#6b7280' }}>Kab. Toraja Utara</div>
+          <div style={{ fontSize: '1rem', fontWeight: 'bold', color: '#1f2937' }}>
+            KUA Rantepao
+          </div>
+          <div style={{ fontSize: '0.875rem', color: '#6b7280' }}>
+            Kab. Toraja Utara
+          </div>
         </div>
       </Link>
 
-{/* 🟢 Teks Berjalan - versi Tailwind */}
-<div className="mt-16 text-center bg-green-800 rounded-md overflow-hidden text-white font-bold whitespace-nowrap">
-  <div className="inline-block whitespace-nowrap animate-marquee">
-    Akad Nikah di Kantor KUA Gratis/tidak dipungut biaya apapun. 
-    Akad Nikah di Luar Kantor KUA dikenakan biaya Rp. 600.000.&nbsp;&nbsp;
-    Akad Nikah di Kantor KUA Gratis/tidak dipungut biaya apapun. 
-    Akad Nikah di Luar Kantor KUA dikenakan biaya Rp. 600.000.&nbsp;&nbsp;
-  </div>
-</div>
+      {/* 🟢 TEKS BERJALAN - CSS murni, aman di semua browser */}
+      <div
+        style={{
+          backgroundColor: '#166534',
+          color: 'white',
+          fontWeight: 'bold',
+          borderRadius: '6px',
+          overflow: 'hidden',
+          whiteSpace: 'nowrap',
+          position: 'relative',
+          zIndex: 5,
+          padding: '0.5rem 0',
+        }}
+      >
+        <div
+          style={{
+            display: 'inline-block',
+            animation: 'marquee 25s linear infinite',
+          }}
+        >
+          Akad Nikah di Kantor KUA Gratis/tidak dipungut biaya apapun. Akad Nikah di
+          Luar Kantor KUA dikenakan biaya Rp. 600.000.&nbsp;&nbsp; Akad Nikah di Kantor
+          KUA Gratis/tidak dipungut biaya apapun. Akad Nikah di Luar Kantor KUA
+          dikenakan biaya Rp. 600.000.&nbsp;&nbsp;
+        </div>
+        <style jsx>{`
+          @keyframes marquee {
+            0% {
+              transform: translateX(100%);
+            }
+            100% {
+              transform: translateX(-100%);
+            }
+          }
+        `}</style>
+      </div>
 
-      {/* Navbar */}
+      {/* 🔸 Navbar */}
       <nav
         style={{
           borderBottom: '1px solid #e5e7eb',
           paddingBottom: '1rem',
           marginBottom: '2rem',
-          marginTop: '2rem'
+          marginTop: '2rem',
         }}
       >
         {isMobile && (
@@ -284,7 +284,7 @@ useEffect(() => {
               fontSize: '1.5rem',
               cursor: 'pointer',
               color: '#1f2937',
-              marginBottom: '1rem'
+              marginBottom: '1rem',
             }}
           >
             ☰
@@ -298,7 +298,7 @@ useEffect(() => {
             padding: 0,
             display: isMobile ? (isMenuOpen ? 'flex' : 'none') : 'flex',
             flexDirection: isMobile ? 'column' : 'row',
-            gap: '1rem'
+            gap: '1rem',
           }}
         >
           {menuItems.map((item) => (
@@ -314,7 +314,7 @@ useEffect(() => {
                     borderBottom: item.active ? '2px solid #16a34a' : 'none',
                     textDecoration: 'none',
                     display: 'inline-block',
-                    padding: '0.25rem 0'
+                    padding: '0.25rem 0',
                   }}
                 >
                   {item.name}
@@ -328,7 +328,7 @@ useEffect(() => {
                     borderBottom: item.active ? '2px solid #16a34a' : 'none',
                     textDecoration: 'none',
                     display: 'inline-block',
-                    padding: '0.25rem 0'
+                    padding: '0.25rem 0',
                   }}
                 >
                   {item.name}
@@ -338,7 +338,6 @@ useEffect(() => {
           ))}
         </ul>
       </nav>
-
       {/* Foto Kepala KUA */}
       <div style={{
         width: '100%',
