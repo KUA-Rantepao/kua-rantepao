@@ -257,7 +257,7 @@ useEffect(() => {
         </div>
       </Link>
 
-{/* Teks Berjalan - JavaScript (Looping Mulus, Tanpa Marquee) */}
+{/* Teks Berjalan - CSS Animation */}
 <div
   style={{
     marginTop: '4rem',
@@ -271,12 +271,30 @@ useEffect(() => {
     fontSize: '0.95rem',
     fontWeight: 'bold',
     color: '#ffffff',
+    position: 'relative',
   }}
 >
-  <div ref={marqueeRef} style={{ display: 'inline-block', whiteSpace: 'nowrap' }}>
+  <div
+    style={{
+      display: 'inline-block',
+      whiteSpace: 'nowrap',
+      animation: 'marquee 30s linear infinite',
+    }}
+  >
     Akad Nikah di Kantor KUA Gratis/tidak dipungut biaya apapun. Akad Nikah di Luar Kantor KUA dikenakan biaya Rp. 600.000.&nbsp;&nbsp;
     Akad Nikah di Kantor KUA Gratis/tidak dipungut biaya apapun. Akad Nikah di Luar Kantor KUA dikenakan biaya Rp. 600.000.&nbsp;&nbsp;
   </div>
+
+  <style jsx>{`
+    @keyframes marquee {
+      0% {
+        transform: translateX(100%);
+      }
+      100% {
+        transform: translateX(-100%);
+      }
+    }
+  `}</style>
 </div>
 
       {/* Navbar */}
