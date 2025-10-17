@@ -1,5 +1,5 @@
 // app/berita/[slug]/page.tsx
-import { getAllBerita } from '@/lib/berita';
+import { getAllBerita } from '@/lib/berita.ts';
 import Image from 'next/image';
 import Link from 'next/link';
 
@@ -56,3 +56,4 @@ export default function DetailBerita({ params }: { params: { slug: string } }) {
     </div>
   );
 }
+
