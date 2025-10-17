@@ -256,44 +256,14 @@ useEffect(() => {
         </div>
       </Link>
 
-{/* Teks Berjalan - CSS Animation */}
-<div
-  style={{
-    marginTop: '4rem',
-    textAlign: 'center',
-    padding: '0.6rem 0',
-    backgroundColor: '#166534',
-    borderRadius: '6px',
-    overflow: 'hidden',
-    whiteSpace: 'nowrap',
-    width: '100%',
-    fontSize: '0.95rem',
-    fontWeight: 'bold',
-    color: '#ffffff',
-    position: 'relative',
-  }}
->
-  <div
-    style={{
-      display: 'inline-block',
-      whiteSpace: 'nowrap',
-      animation: 'marquee 30s linear infinite',
-    }}
-  >
-    Akad Nikah di Kantor KUA Gratis/tidak dipungut biaya apapun. Akad Nikah di Luar Kantor KUA dikenakan biaya Rp. 600.000.&nbsp;&nbsp;
-    Akad Nikah di Kantor KUA Gratis/tidak dipungut biaya apapun. Akad Nikah di Luar Kantor KUA dikenakan biaya Rp. 600.000.&nbsp;&nbsp;
+{/* 🟢 Teks Berjalan - versi Tailwind */}
+<div className="mt-16 text-center bg-green-800 rounded-md overflow-hidden text-white font-bold whitespace-nowrap">
+  <div className="inline-block whitespace-nowrap animate-marquee">
+    Akad Nikah di Kantor KUA Gratis/tidak dipungut biaya apapun. 
+    Akad Nikah di Luar Kantor KUA dikenakan biaya Rp. 600.000.&nbsp;&nbsp;
+    Akad Nikah di Kantor KUA Gratis/tidak dipungut biaya apapun. 
+    Akad Nikah di Luar Kantor KUA dikenakan biaya Rp. 600.000.&nbsp;&nbsp;
   </div>
-
-  <style jsx>{`
-    @keyframes marquee {
-      0% {
-        transform: translateX(100%);
-      }
-      100% {
-        transform: translateX(-100%);
-      }
-    }
-  `}</style>
 </div>
 
       {/* Navbar */}
