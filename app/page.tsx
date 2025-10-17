@@ -152,7 +152,6 @@ export default function Home() {
   const [isMobile, setIsMobile] = useState(false);
   const [showPopup, setShowPopup] = useState(false);
   const marqueeRef = useRef<HTMLDivElement>(null);
-  import { useState, useEffect, useRef } from 'react';
   
   useEffect(() => {
     const checkScreenSize = () => setIsMobile(window.innerWidth < 768);
