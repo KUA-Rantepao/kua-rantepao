@@ -1,0 +1,15 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  @apply bg-white;
+}
+
+.text-primary {
+  @apply text-green-700;
+}
+
+.bg-primary {
+  @apply bg-green-700;
+}
