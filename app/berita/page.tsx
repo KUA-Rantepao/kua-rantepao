@@ -4,10 +4,15 @@ import path from 'path';
 import Link from 'next/link';
 import Image from 'next/image';
 
-// FUNGSI YANG DIUPDATE UNTUK STRUKTUR BARU
+// FUNGSI YANG DIUPDATE UNTUK STRUKTUR BARU - DENGAN CONSOLE LOG
 function getAllBerita() {
   const CONTENT_DIR = path.join(process.cwd(), 'content');
-  if (!fs.existsSync(CONTENT_DIR)) return [];
+  console.log('🔍 Scanning directory:', CONTENT_DIR);
+  
+  if (!fs.existsSync(CONTENT_DIR)) {
+    console.log('❌ Content directory tidak ditemukan');
+    return [];
+  }
 
   const beritaList = [];
 
@@ -15,6 +20,8 @@ function getAllBerita() {
   const tahunDirs = fs.readdirSync(CONTENT_DIR).filter(dir => 
     fs.statSync(path.join(CONTENT_DIR, dir)).isDirectory()
   );
+
+  console.log('📅 Tahun yang ditemukan:', tahunDirs);
 
   for (const tahun of tahunDirs) {
     const tahunPath = path.join(CONTENT_DIR, tahun);
@@ -24,57 +31,73 @@ function getAllBerita() {
       fs.statSync(path.join(tahunPath, dir)).isDirectory()
     );
 
+    console.log(`📂 Bulan di ${tahun}:`, bulanDirs);
+
     for (const bulan of bulanDirs) {
       const bulanPath = path.join(tahunPath, bulan);
       
       // Baca semua file .md dalam bulan
       const files = fs.readdirSync(bulanPath).filter(f => f.endsWith('.md'));
+      
+      console.log(`📄 File di ${tahun}/${bulan}:`, files);
 
       for (const file of files) {
-        const slug = file.replace(/\.md$/, '');
-        const content = fs.readFileSync(path.join(bulanPath, file), 'utf8');
-        const lines = content.split('\n').map(l => l.trim());
+        try {
+          const slug = file.replace(/\.md$/, '');
+          const content = fs.readFileSync(path.join(bulanPath, file), 'utf8');
+          const lines = content.split('\n').map(l => l.trim());
 
-        // Ambil judul (baris pertama, hapus # jika ada)
-        let judul = lines[0] || 'Tanpa Judul';
-        if (judul.startsWith('# ')) judul = judul.slice(2);
+          // Ambil judul (baris pertama, hapus # jika ada)
+          let judul = lines[0] || 'Tanpa Judul';
+          if (judul.startsWith('# ')) judul = judul.slice(2);
 
-        // Ambil tanggal (baris kedua)
-        const tanggal = lines[1] || '';
+          // Ambil tanggal (baris kedua)
+          const tanggal = lines[1] || '';
 
-        // Ambil isi (gabung baris ke-3 dst)
-        const isi = lines.slice(2).join(' ').trim();
+          // Ambil isi (gabung baris ke-3 dst)
+          const isi = lines.slice(2).join(' ').trim();
 
-        // Ekstrak tanggal dari nama file: 2025-09-27-pelayanan-akad-nikah-rantepasele.md
-        const dateMatch = file.match(/(\d{4})-(\d{2})-(\d{2})/);
-        const tanggalISO = dateMatch ? `${dateMatch[1]}-${dateMatch[2]}-${dateMatch[3]}` : '';
-        
-        // Format gambar: /berita/2025/september/27-09-2025.jpg
-        const tanggalGambar = dateMatch ? `${dateMatch[3]}-${dateMatch[2]}-${dateMatch[1]}` : '';
-        const gambar = tanggalGambar ? `/berita/${tahun}/${bulan}/${tanggalGambar}.jpg` : '';
+          // Ekstrak tanggal dari nama file: 2025-09-27-pelayanan-akad-nikah-rantepasele.md
+          const dateMatch = file.match(/(\d{4})-(\d{2})-(\d{2})/);
+          const tanggalISO = dateMatch ? `${dateMatch[1]}-${dateMatch[2]}-${dateMatch[3]}` : '';
+          
+          // Format gambar: /berita/2025/september/27-09-2025.jpg
+          const tanggalGambar = dateMatch ? `${dateMatch[3]}-${dateMatch[2]}-${dateMatch[1]}` : '';
+          const gambar = tanggalGambar ? `/berita/${tahun}/${bulan}/${tanggalGambar}.jpg` : '';
 
-        beritaList.push({ 
-          slug, 
-          judul, 
-          tanggal, 
-          tanggalISO, 
-          isi, 
-          gambar,
-          tahun,
-          bulan
-        });
+          beritaList.push({ 
+            slug, 
+            judul, 
+            tanggal, 
+            tanggalISO, 
+            isi, 
+            gambar,
+            tahun,
+            bulan
+          });
+
+          console.log('✅ Berhasil memuat:', judul);
+        } catch (error) {
+          console.log('❌ Gagal memuat file:', file, error);
+        }
       }
     }
   }
 
-  // Urutkan dari terbaru ke terlama
-  return beritaList
+  const result = beritaList
     .filter(b => b.tanggalISO)
     .sort((a, b) => b.tanggalISO.localeCompare(a.tanggalISO));
+
+  console.log('🎯 Total berita yang ditemukan:', result.length);
+  
+  // Urutkan dari terbaru ke terlama
+  return result;
 }
 
 export default function BeritaPage() {
   const beritaList = getAllBerita();
+  
+  console.log('📋 Berita list di component:', beritaList);
 
   return (
     <div
@@ -87,6 +110,7 @@ export default function BeritaPage() {
         position: 'relative',
       }}
     >
+  
       {/* Logo + Nama KUA */}
       <Link
         href="/"
