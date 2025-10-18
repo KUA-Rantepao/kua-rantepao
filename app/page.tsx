@@ -202,7 +202,6 @@ export default function Home() {
     { name: 'Layanan Nikah', href: '/layanan-nikah' },
     { name: 'Konsultasi & Bimbingan', href: 'https://konsultasi-agama-islam.vercel.app/' },
     { name: 'Panduan SIMKAH', href: '#' },
-    { name: 'Berita', href: '/berita' },
   ];
 
   return (
@@ -470,7 +469,7 @@ export default function Home() {
 
       <WidgetJadwalShalat />
 
-      {/* Berita Terkini */}
+      {/Informasi Tambahan */}
       <section
         style={{
           marginTop: '2rem',
@@ -509,7 +508,7 @@ export default function Home() {
             lineHeight: 1.4,
           }}
         >
-          Pengumuman: Layanan cuti bersama 9–11 Oktober 2025.
+          Pengumuman: Layanan KUA Rantepao terbuka pada hari dan jam kerja.
         </p>
         <p
           style={{
@@ -518,7 +517,7 @@ export default function Home() {
             marginTop: '0.5rem',
           }}
         >
-          Seluruh layanan KUA Rantepao libur selama cuti bersama.
+          Sabtu-Minggu dan tanggal merah pelayanan libur.
         </p>
       </section>
 
