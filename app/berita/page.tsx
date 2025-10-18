@@ -1,7 +1,77 @@
 // app/berita/page.tsx
-import { getAllBerita } from '../../../lib/berita'
-import Link from 'next/link'
-import Image from 'next/image'
+import fs from 'fs';
+import path from 'path';
+import Link from 'next/link';
+import Image from 'next/image';
+
+// FUNGSI YANG DIUPDATE UNTUK STRUKTUR BARU
+function getAllBerita() {
+  const CONTENT_DIR = path.join(process.cwd(), 'content');
+  if (!fs.existsSync(CONTENT_DIR)) return [];
+
+  const beritaList = [];
+
+  // Baca semua tahun
+  const tahunDirs = fs.readdirSync(CONTENT_DIR).filter(dir => 
+    fs.statSync(path.join(CONTENT_DIR, dir)).isDirectory()
+  );
+
+  for (const tahun of tahunDirs) {
+    const tahunPath = path.join(CONTENT_DIR, tahun);
+    
+    // Baca semua bulan dalam tahun
+    const bulanDirs = fs.readdirSync(tahunPath).filter(dir =>
+      fs.statSync(path.join(tahunPath, dir)).isDirectory()
+    );
+
+    for (const bulan of bulanDirs) {
+      const bulanPath = path.join(tahunPath, bulan);
+      
+      // Baca semua file .md dalam bulan
+      const files = fs.readdirSync(bulanPath).filter(f => f.endsWith('.md'));
+
+      for (const file of files) {
+        const slug = file.replace(/\.md$/, '');
+        const content = fs.readFileSync(path.join(bulanPath, file), 'utf8');
+        const lines = content.split('\n').map(l => l.trim());
+
+        // Ambil judul (baris pertama, hapus # jika ada)
+        let judul = lines[0] || 'Tanpa Judul';
+        if (judul.startsWith('# ')) judul = judul.slice(2);
+
+        // Ambil tanggal (baris kedua)
+        const tanggal = lines[1] || '';
+
+        // Ambil isi (gabung baris ke-3 dst)
+        const isi = lines.slice(2).join(' ').trim();
+
+        // Ekstrak tanggal dari nama file: 2025-09-27-pelayanan-akad-nikah-rantepasele.md
+        const dateMatch = file.match(/(\d{4})-(\d{2})-(\d{2})/);
+        const tanggalISO = dateMatch ? `${dateMatch[1]}-${dateMatch[2]}-${dateMatch[3]}` : '';
+        
+        // Format gambar: /berita/2025/september/27-09-2025.jpg
+        const tanggalGambar = dateMatch ? `${dateMatch[3]}-${dateMatch[2]}-${dateMatch[1]}` : '';
+        const gambar = tanggalGambar ? `/berita/${tahun}/${bulan}/${tanggalGambar}.jpg` : '';
+
+        beritaList.push({ 
+          slug, 
+          judul, 
+          tanggal, 
+          tanggalISO, 
+          isi, 
+          gambar,
+          tahun,
+          bulan
+        });
+      }
+    }
+  }
+
+  // Urutkan dari terbaru ke terlama
+  return beritaList
+    .filter(b => b.tanggalISO)
+    .sort((a, b) => b.tanggalISO.localeCompare(a.tanggalISO));
+}
 
 export default function BeritaPage() {
   const beritaList = getAllBerita();
