@@ -5,10 +5,15 @@ import Link from 'next/link'
 import fs from 'fs'
 import path from 'path'
 
-// FUNGSI YANG DIUPDATE UNTUK STRUKTUR BARU
+// FUNGSI YANG DIUPDATE UNTUK STRUKTUR BARU - DENGAN CONSOLE LOG
 function getAllBerita() {
   const CONTENT_DIR = path.join(process.cwd(), 'content');
-  if (!fs.existsSync(CONTENT_DIR)) return [];
+  console.log('🔍 [slug] Scanning directory:', CONTENT_DIR);
+  
+  if (!fs.existsSync(CONTENT_DIR)) {
+    console.log('❌ [slug] Content directory tidak ditemukan');
+    return [];
+  }
 
   const beritaList = [];
 
@@ -16,6 +21,8 @@ function getAllBerita() {
   const tahunDirs = fs.readdirSync(CONTENT_DIR).filter(dir => 
     fs.statSync(path.join(CONTENT_DIR, dir)).isDirectory()
   );
+
+  console.log('📅 [slug] Tahun yang ditemukan:', tahunDirs);
 
   for (const tahun of tahunDirs) {
     const tahunPath = path.join(CONTENT_DIR, tahun);
@@ -25,51 +32,71 @@ function getAllBerita() {
       fs.statSync(path.join(tahunPath, dir)).isDirectory()
     );
 
+    console.log(`📂 [slug] Bulan di ${tahun}:`, bulanDirs);
+
     for (const bulan of bulanDirs) {
       const bulanPath = path.join(tahunPath, bulan);
       
       // Baca semua file .md dalam bulan
       const files = fs.readdirSync(bulanPath).filter(f => f.endsWith('.md'));
+      
+      console.log(`📄 [slug] File di ${tahun}/${bulan}:`, files);
 
       for (const file of files) {
-        const slug = file.replace(/\.md$/, '');
-        const content = fs.readFileSync(path.join(bulanPath, file), 'utf8');
-        const lines = content.split('\n').map(l => l.trim());
+        try {
+          const slug = file.replace(/\.md$/, '');
+          const content = fs.readFileSync(path.join(bulanPath, file), 'utf8');
+          const lines = content.split('\n').map(l => l.trim());
 
-        let judul = lines[0] || 'Tanpa Judul';
-        if (judul.startsWith('# ')) judul = judul.slice(2);
+          let judul = lines[0] || 'Tanpa Judul';
+          if (judul.startsWith('# ')) judul = judul.slice(2);
 
-        const tanggal = lines[1] || '';
-        const isi = lines.slice(2).join(' ').trim();
+          const tanggal = lines[1] || '';
+          const isi = lines.slice(2).join(' ').trim();
 
-        const dateMatch = file.match(/(\d{4})-(\d{2})-(\d{2})/);
-        const tanggalISO = dateMatch ? `${dateMatch[1]}-${dateMatch[2]}-${dateMatch[3]}` : '';
-        
-        const tanggalGambar = dateMatch ? `${dateMatch[3]}-${dateMatch[2]}-${dateMatch[1]}` : '';
-        const gambar = tanggalGambar ? `/berita/${tahun}/${bulan}/${tanggalGambar}.jpg` : '';
+          const dateMatch = file.match(/(\d{4})-(\d{2})-(\d{2})/);
+          const tanggalISO = dateMatch ? `${dateMatch[1]}-${dateMatch[2]}-${dateMatch[3]}` : '';
+          
+          const tanggalGambar = dateMatch ? `${dateMatch[3]}-${dateMatch[2]}-${dateMatch[1]}` : '';
+          const gambar = tanggalGambar ? `/berita/${tahun}/${bulan}/${tanggalGambar}.jpg` : '';
 
-        beritaList.push({ 
-          slug, 
-          judul, 
-          tanggal, 
-          tanggalISO, 
-          isi, 
-          gambar,
-          tahun,
-          bulan
-        });
+          beritaList.push({ 
+            slug, 
+            judul, 
+            tanggal, 
+            tanggalISO, 
+            isi, 
+            gambar,
+            tahun,
+            bulan
+          });
+
+          console.log('✅ [slug] Berhasil memuat:', judul);
+        } catch (error) {
+          console.log('❌ [slug] Gagal memuat file:', file, error);
+        }
       }
     }
   }
 
-  return beritaList
+  const result = beritaList
     .filter(b => b.tanggalISO)
     .sort((a, b) => b.tanggalISO.localeCompare(a.tanggalISO));
+
+  console.log('🎯 [slug] Total berita yang ditemukan:', result.length);
+  
+  return result;
 }
 
 function getBeritaBySlug(slug: string) {
   const semuaBerita = getAllBerita();
-  return semuaBerita.find(b => b.slug === slug) || null;
+  const berita = semuaBerita.find(b => b.slug === slug);
+  
+  console.log('🔍 Searching for slug:', slug);
+  console.log('📝 Found:', berita ? berita.judul : 'NOT FOUND');
+  console.log('📊 All available slugs:', semuaBerita.map(b => b.slug));
+  
+  return berita || null;
 }
 
 interface Props {
