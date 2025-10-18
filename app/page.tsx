@@ -496,7 +496,7 @@ export default function Home() {
               margin: 0,
             }}
           >
-            Berita Terkini
+            informasi pelayanan
           </h2>
         </div>
         <hr style={{ borderColor: '#e5e7eb', marginBottom: '1rem' }} />
