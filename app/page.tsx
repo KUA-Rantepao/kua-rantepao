@@ -41,7 +41,7 @@ function WidgetJadwalShalat() {
         if (!response.ok) throw new Error('File tidak ditemukan');
         const data = await response.json();
         const todayStr = `${year}-${month}-${String(today.getDate()).padStart(2, '0')}`;
-        const item = data.find((d) => d.tanggal === todayStr);
+        const item = data.find((d: any) => d.tanggal === todayStr); // ✅ Perbaikan: tambahkan :any
         setJadwal(item);
         setLoadingJadwal(false);
       } catch (err) {
@@ -469,7 +469,7 @@ export default function Home() {
 
       <WidgetJadwalShalat />
 
-      {/Informasi Tambahan */}
+      {/* Informasi Tambahan */}
       <section
         style={{
           marginTop: '2rem',
