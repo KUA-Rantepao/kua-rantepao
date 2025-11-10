@@ -468,59 +468,7 @@ export default function Home() {
       </section>
 
       <WidgetJadwalShalat />
-
-      {/* Informasi Tambahan */}
-      <section
-        style={{
-          marginTop: '2rem',
-          padding: '1rem',
-          backgroundColor: '#fff',
-          borderRadius: '8px',
-          boxShadow: '0 2px 10px rgba(0,0,0,0.05)',
-        }}
-      >
-        <div
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: '0.5rem',
-            marginBottom: '0.5rem',
-          }}
-        >
-          <span style={{ fontSize: '1.25rem', color: '#16a34a' }}>📰</span>
-          <h2
-            style={{
-              fontSize: '1.25rem',
-              fontWeight: 'bold',
-              color: '#1f2937',
-              margin: 0,
-            }}
-          >
-            informasi pelayanan
-          </h2>
-        </div>
-        <hr style={{ borderColor: '#e5e7eb', marginBottom: '1rem' }} />
-        <p
-          style={{
-            fontWeight: 'bold',
-            color: '#1f2937',
-            fontSize: '1.125rem',
-            lineHeight: 1.4,
-          }}
-        >
-          Pengumuman: Layanan KUA Rantepao terbuka pada hari dan jam kerja.
-        </p>
-        <p
-          style={{
-            color: '#6b7280',
-            fontSize: '0.875rem',
-            marginTop: '0.5rem',
-          }}
-        >
-          Sabtu-Minggu dan tanggal merah pelayanan libur.
-        </p>
-      </section>
-
+      
       {/* Footer */}
       <footer
         style={{
