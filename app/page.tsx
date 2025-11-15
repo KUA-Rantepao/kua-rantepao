@@ -200,8 +200,7 @@ export default function Home() {
     { name: 'Visi & Misi', href: '/visi-misi' },
     { name: 'Struktur Organisasi', href: '/struktur-organisasi' },
     { name: 'Layanan Nikah', href: '/layanan-nikah' },
-    { name: 'Konsultasi & Bimbingan', href: 'https://konsultasi-agama-islam.vercel.app/' },
-    { name: 'Panduan SIMKAH', href: '#' },
+    { name: 'Konsultasi & Bimbingan', href: 'https://konsultasi-jet.vercel.app/' },
   ];
 
   return (
